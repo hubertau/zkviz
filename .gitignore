@@ -7,6 +7,10 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+*.pdf
+*.html
+*.gexf
+
 
 # Icon must end with two \r
 Icon

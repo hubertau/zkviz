@@ -18,23 +18,24 @@ PAT_LINK = re.compile(r"\[\[(\d+)\]\]")
 
 
 def parse_zettels(filepaths):
-    """ Parse the ID and title from the filename.
+    """ Parse the ID and title from the filename and first line of the file.
 
-    Assumes that the filename has the format "YYYYMMDDHHMMSS This is title"
+    Assumes that the filename has the format "This is title" and the first line
+    of the file is the ID
 
     """
     documents = []
     for filepath in filepaths:
         basename = os.path.basename(filepath)
         filename, ext = os.path.splitext(basename)
-        r = PAT_ZK_ID.match(filename)
-        if not r:
-            continue
 
         with open(filepath, encoding="utf-8") as f:
+            zkn_id = f.readline().strip('\n')
+            assert len(zkn_id) == 14
             links = PAT_LINK.findall(f.read())
 
-        document = dict(id=r.group(1), title=r.group(2), links=links)
+        # document = dict(id=r.group(1), title=r.group(2), links=links)
+        document = dict(id = zkn_id, title = filename, links = links)
         documents.append(document)
     return documents
 
@@ -195,6 +196,9 @@ def main(args=None):
         only_listed=args.only_listed,
     )
     graph.render(args.output)
+
+    if not args.use_graphviz:
+        graph.save_graph(args.output + '.gexf')
 
 
 if __name__ == "__main__":

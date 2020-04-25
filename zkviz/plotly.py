@@ -159,3 +159,7 @@ class NetworkPlotly:
         if not output.endswith(".html"):
             output += ".html"
         fig.write_html(output, auto_open=view)
+
+    def save_graph(self, output):
+
+        nx.write_gexf(self.graph, output)
